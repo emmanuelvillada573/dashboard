@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import plotly.express as px
 
-st.set_page_config(page_title="Dashboard Estudiantil", layout="wide")
+st.set_page_config(page_title="‘Dashboard Estudiantil – Grupo 01", layout="wide")
 
 # ── Carga y limpieza 
 @st.cache_data
@@ -46,7 +46,7 @@ def load_data():
     df["Barrio_Residencia"] = df["Barrio_Residencia"].str.strip()
     df["Nombre_Completo"]  = (
         df["Nombre_Estudiante"].str.strip() + " " + df["Apellido_Estudiante"].str.strip()
-    )
+    ).str.replace(r"\s+", " ", regex=True)
     df["Talla_Zapato"] = pd.to_numeric(df["Talla_Zapato"], errors="coerce")
     return df
 
@@ -69,8 +69,10 @@ barrio_sel  = st.sidebar.multiselect(" Barrio de Residencia", barrio_opts, defau
 
 # Filtro 4 – Integrantes del grupo (antes de los sliders)
 integrantes_opts = sorted(df["Nombre_Completo"].dropna().unique())
+MI_EQUIPO = ["EMMANUEL VILLADA SUÁREZ", "DAYANA GARCIA RODRIGUEZ", "SEBASTIAN ESTRADA CASTAÑEDA", "BRAYAN ANDRES VILLA ARANGO"]
+default_integrantes = [i for i in MI_EQUIPO if i in integrantes_opts]
 integrantes_sel  = st.sidebar.multiselect(
-    " Integrantes del Grupo", integrantes_opts, default=integrantes_opts
+    " Integrantes del Grupo", integrantes_opts, default=default_integrantes
 )
 
 st.sidebar.markdown("---")
@@ -104,7 +106,7 @@ st.subheader(" Datos del Grupo")
 st.dataframe(filt.drop(columns=["Nombre_Completo"]), use_container_width=True)
 
 # ── Título ────────────────────────────────────────────────────────────────────
-st.title("Dashboard Estudiantil – Grupo Programación Avanzada")
+st.title("Dashboard Estudiantil – Grupo 01")
 st.markdown("---")
 
 # ── Métricas ──────────────────────────────────────────────────────────────────
@@ -206,7 +208,7 @@ with dl1:
     st.markdown("** Mayor Estatura**")
     st.dataframe(top5_est, use_container_width=True)
     st.download_button(
-        "⬇️ Descargar CSV",
+        " Descargar CSV",
         top5_est.to_csv(index=True).encode("utf-8"),
         "top5_mayor_estatura.csv",
         "text/csv",
@@ -217,7 +219,7 @@ with dl2:
     st.markdown("** Mayor Peso**")
     st.dataframe(top5_peso, use_container_width=True)
     st.download_button(
-        "⬇️ Descargar CSV",
+        " Descargar CSV",
         top5_peso.to_csv(index=True).encode("utf-8"),
         "top5_mayor_peso.csv",
         "text/csv",
